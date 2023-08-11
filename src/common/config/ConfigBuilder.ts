@@ -71,7 +71,7 @@ export const parseConfigFromSources = async () => {
     const initLogger = winston.loggers.get('init') as AppLogger;
 
     let configDoc: YamlOperatorConfigDocument
-    let configFromFile: OperatorJsonConfig = {};
+    let configFromFile: OperatorJsonConfig = {digests: []};
 
     const operatorConfig = `${dataDir}/config.yaml`;
     initLogger.debug(`Config File Location: ${operatorConfig}`);
@@ -94,7 +94,7 @@ export const parseConfigFromSources = async () => {
         // create an empty doc
         configDoc = new YamlOperatorConfigDocument('', operatorConfig);
         configDoc.parsed = new YamlDocument({});
-        configFromFile = {};
+        configFromFile = {digests: []};
     } else {
         configDoc = doc as (YamlOperatorConfigDocument);
 
@@ -117,6 +117,7 @@ export const parseConfigFromEnv = (): OperatorJsonConfig => {
     return {
         logging: {
             level: process.env.LOG_LEVEL as (LogLevel | undefined)
-        }
+        },
+        digests: []
     }
 }

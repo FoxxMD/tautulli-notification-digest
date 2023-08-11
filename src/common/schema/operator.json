@@ -1,0 +1,160 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "DatabaseConfig": {
+            "properties": {
+                "database": {
+                    "description": "The name of the database",
+                    "type": "string"
+                },
+                "dialect": {
+                    "enum": [
+                        "mariadb",
+                        "mysql",
+                        "sqlite"
+                    ],
+                    "type": "string"
+                },
+                "host": {
+                    "default": "'localhost'",
+                    "description": "The host of the relational database.",
+                    "type": "string"
+                },
+                "password": {
+                    "description": "The password which is used to authenticate against the database.",
+                    "type": "string"
+                },
+                "port": {
+                    "description": "The port of the relational database.",
+                    "type": "number"
+                },
+                "username": {
+                    "description": "The username which is used to authenticate against the database.",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "dialect"
+            ],
+            "type": "object"
+        },
+        "DigestData": {
+            "properties": {
+                "cron": {
+                    "type": "string"
+                },
+                "discord": {
+                    "$ref": "#/definitions/DiscordData"
+                },
+                "slug": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "cron",
+                "discord",
+                "slug"
+            ],
+            "type": "object"
+        },
+        "DiscordData": {
+            "properties": {
+                "options": {
+                    "$ref": "#/definitions/DiscordOptions"
+                },
+                "webhook": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "webhook"
+            ],
+            "type": "object"
+        },
+        "DiscordOptions": {
+            "properties": {
+                "collapseToThumbnail": {
+                    "type": "number"
+                },
+                "defaultImageFormat": {
+                    "enum": [
+                        "image",
+                        "thumbnail"
+                    ],
+                    "type": "string"
+                },
+                "eventsPerMessage": {
+                    "type": "number"
+                }
+            },
+            "type": "object"
+        },
+        "LogLevel": {
+            "enum": [
+                "debug",
+                "error",
+                "info",
+                "safety",
+                "verbose",
+                "warn"
+            ],
+            "type": "string"
+        },
+        "LoggingOptions": {
+            "properties": {
+                "console": {
+                    "$ref": "#/definitions/LogLevel",
+                    "description": "Specify the minimum log level streamed to the console (or docker container)"
+                },
+                "db": {
+                    "type": "boolean"
+                },
+                "discord": {
+                    "$ref": "#/definitions/LogLevel"
+                },
+                "file": {
+                    "description": "Specify the minimum log level to output to rotating files. If `false` no log files will be created.",
+                    "enum": [
+                        "debug",
+                        "error",
+                        false,
+                        "info",
+                        "safety",
+                        "verbose",
+                        "warn"
+                    ]
+                },
+                "level": {
+                    "$ref": "#/definitions/LogLevel",
+                    "default": "'info'",
+                    "description": "Specify the minimum log level for all log outputs without their own level specified.\n\nDefaults to env `LOG_LEVEL` or `info` if not specified."
+                },
+                "stream": {
+                    "$ref": "#/definitions/LogLevel",
+                    "description": "Specify the minimum log level streamed to the UI"
+                }
+            },
+            "type": "object"
+        }
+    },
+    "properties": {
+        "database": {
+            "$ref": "#/definitions/DatabaseConfig"
+        },
+        "digests": {
+            "items": {
+                "$ref": "#/definitions/DigestData"
+            },
+            "type": "array"
+        },
+        "logging": {
+            "$ref": "#/definitions/LoggingOptions",
+            "description": "Settings to configure global logging defaults"
+        }
+    },
+    "required": [
+        "digests"
+    ],
+    "type": "object"
+}
+

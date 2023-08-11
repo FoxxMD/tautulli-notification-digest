@@ -8,6 +8,8 @@ import dotenv from 'dotenv';
 import {AppLogger, getLogger} from "./common/logging.js";
 import {parseConfigFromSources} from "./common/config/ConfigBuilder.js";
 import {dataDir} from "./common/index.js";
+import {initDB} from "./common/db/index.js";
+import {initServer} from "./api/server.js";
 
 dayjs.extend(utc)
 dayjs.extend(isBetween);
@@ -27,9 +29,11 @@ logger.debug(`Data Dir ENV: ${process.env.DATA_DIR} -> Resolved: ${dataDir}`);
             logging = {},
         } = config;
 
+        const db = await initDB(config);
+
         logger = getLogger(logging);
 
-        logger.info('Hello world!');
+        initServer(config, logger);
 
     } catch (e) {
         logger.error('Exited with uncaught error');

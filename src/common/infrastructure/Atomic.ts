@@ -105,3 +105,11 @@ export interface PopularityThresholdLevel {
     count: number
     level: number
 }
+
+export interface IncomingFileData {
+    buffer: Buffer
+    name: string
+    mimetype: string
+    fieldName?: string
+    size: number
+}
