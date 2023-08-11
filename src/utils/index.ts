@@ -31,7 +31,7 @@ export const intersect = (a: Array<any>, b: Array<any>) => {
 /**
  * @see https://stackoverflow.com/a/64245521/1469797
  * */
-function *setMinus(A: Array<any>, B: Array<any>) {
+function* setMinus(A: Array<any>, B: Array<any>) {
     const setA = new Set(A);
     const setB = new Set(B);
 
@@ -107,3 +107,8 @@ export class RateLimitFunc {
         }
     }
 }
+
+export const chunk = <T>(arr: T[], size: number): T[][] =>
+    Array.from({length: Math.ceil(arr.length / size)}, (v, i) =>
+        arr.slice(i * size, i * size + size)
+    );

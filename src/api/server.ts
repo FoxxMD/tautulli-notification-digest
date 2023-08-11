@@ -17,8 +17,8 @@ app.use(router);
 
 export const initServer = async (config: OperatorConfig, parentLogger: AppLogger) => {
 
-    const apiLogger = parentLogger.child({labels: 'API'}, mergeArr);
-    const ingressLogger = parentLogger.child({labels: 'Tautulli Request'}, mergeArr);
+    const apiLogger = parentLogger.child({labels: ['API']}, mergeArr);
+    const ingressLogger = parentLogger.child({labels: ['Tautulli Request']}, mergeArr);
     try {
         const {
             port = envPort

@@ -10,6 +10,7 @@ import {parseConfigFromSources} from "./common/config/ConfigBuilder.js";
 import {dataDir} from "./common/index.js";
 import {initDB} from "./common/db/index.js";
 import {initServer} from "./api/server.js";
+import {initScheduler} from "./scheduler/scheduler.js";
 
 dayjs.extend(utc)
 dayjs.extend(isBetween);
@@ -34,6 +35,7 @@ logger.debug(`Data Dir ENV: ${process.env.DATA_DIR} -> Resolved: ${dataDir}`);
         logger = getLogger(logging);
 
         initServer(config, logger);
+        initScheduler(config, logger);
 
     } catch (e) {
         logger.error('Exited with uncaught error');
