@@ -32,7 +32,7 @@ FROM base as build
 COPY --chown=abc:abc package*.json ./
 COPY --chown=abc:abc tsconfig.json .
 
-RUN yarn install
+RUN yarn add global patch-package && yarn install
 
 COPY --chown=abc:abc . /app
 
@@ -44,7 +44,7 @@ COPY --from=build --chown=abc:abc /app /app
 
 ENV NODE_ENV="production"
 
-RUN yarn install --omit=dev \
+RUN yarn add global patch-package && yarn install --omit=dev \
     && npm cache clean --force \
     && chown abc:abc node_modules \
     && rm -rf node_modules/ts-node \
