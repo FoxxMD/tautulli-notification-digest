@@ -1,0 +1,10 @@
+version: '3.7'
+
+services:
+  app:
+    container_name: my_app
+    build:
+      context: .
+    volumes:
+      - /path_on_host/data_dir:/config
+    restart: unless-stopped

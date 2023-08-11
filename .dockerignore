@@ -1,0 +1,20 @@
+# Created by .ignore support plugin (hsz.mobi)
+node_modules
+npm-debug.log
+Dockerfile
+.dockerignore
+.gitignore
+.github
+.git
+*.log
+.idea
+config/*.json
+config/*.bak
+/docs
+/logs
+.flatpak-builder
+flatpak/generated-sources.json
+flatpak/.flatpak-builder
+db.sqlite
+.env
+/data
