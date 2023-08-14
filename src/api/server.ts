@@ -10,6 +10,7 @@ import {ErrorWithCause} from "pony-cause";
 import {APIEmbed} from "discord.js";
 import dayjs from "dayjs";
 import {processPendingDigests} from "../common/funcs/processPendingDigests.js";
+import IP from 'ip';
 
 const app = addAsync(express());
 const router = Router();
@@ -123,6 +124,16 @@ export const initServer = async (config: OperatorConfig, parentLogger: AppLogger
         });
 
         apiLogger.info(`API listening on port ${port}`);
+
+
+        try {
+            const ipAddress = IP.address();
+            for (const digest of config.digests) {
+                apiLogger.info(`HINT: Listening for Tautulli Webook URL to: http://${ipAddress}/${digest.slug}`);
+            }
+        } catch (e) {
+            apiLogger.warn(new ErrorWithCause('Could not determine IP for logging hint!', {cause: e}));
+        }
 
     } catch (e) {
         apiLogger.error('Server stopped with uncaught error');
