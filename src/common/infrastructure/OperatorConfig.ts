@@ -73,8 +73,9 @@ export interface DiscordData {
 export type DedupBehavior = 'all' | 'session' | 'never';
 
 export interface DigestData {
+    name?: string
     slug: string
-    cron: string
+    cron: string | string[]
     discord: DiscordData
     dedup?: DedupBehavior
 }

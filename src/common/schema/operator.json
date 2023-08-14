@@ -38,13 +38,51 @@
             ],
             "type": "object"
         },
+        "DedupBehavior": {
+            "enum": [
+                "all",
+                "never",
+                "session"
+            ],
+            "type": "string"
+        },
+        "DefaultOptions": {
+            "properties": {
+                "dedup": {
+                    "$ref": "#/definitions/DedupBehavior"
+                },
+                "discordOptions": {
+                    "$ref": "#/definitions/DiscordOptions"
+                },
+                "webhook": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
         "DigestData": {
             "properties": {
                 "cron": {
-                    "type": "string"
+                    "anyOf": [
+                        {
+                            "items": {
+                                "type": "string"
+                            },
+                            "type": "array"
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ]
+                },
+                "dedup": {
+                    "$ref": "#/definitions/DedupBehavior"
                 },
                 "discord": {
                     "$ref": "#/definitions/DiscordData"
+                },
+                "name": {
+                    "type": "string"
                 },
                 "slug": {
                     "type": "string"
@@ -73,20 +111,94 @@
         },
         "DiscordOptions": {
             "properties": {
-                "collapseToThumbnail": {
+                "eventsPerMessage": {
                     "type": "number"
                 },
-                "defaultImageFormat": {
-                    "enum": [
-                        "image",
-                        "thumbnail"
-                    ],
-                    "type": "string"
+                "list": {
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false
+                            ],
+                            "type": "boolean"
+                        },
+                        {
+                            "type": "number"
+                        }
+                    ]
                 },
-                "eventsPerMessage": {
+                "overflowTruncate": {
+                    "type": "number"
+                },
+                "poster": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/EventFormatOptions"
+                        },
+                        {
+                            "enum": [
+                                false
+                            ],
+                            "type": "boolean"
+                        },
+                        {
+                            "type": "number"
+                        }
+                    ]
+                },
+                "text": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/EventFormatOptions"
+                        },
+                        {
+                            "enum": [
+                                false
+                            ],
+                            "type": "boolean"
+                        },
+                        {
+                            "type": "number"
+                        }
+                    ]
+                },
+                "thumbnail": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/EventFormatOptions"
+                        },
+                        {
+                            "enum": [
+                                false
+                            ],
+                            "type": "boolean"
+                        },
+                        {
+                            "type": "number"
+                        }
+                    ]
+                }
+            },
+            "type": "object"
+        },
+        "EventFormatOptions": {
+            "properties": {
+                "enabled": {
+                    "type": "boolean"
+                },
+                "includeLinks": {
+                    "type": "boolean"
+                },
+                "threshold": {
+                    "type": "number"
+                },
+                "truncateDescription": {
                     "type": "number"
                 }
             },
+            "required": [
+                "threshold"
+            ],
             "type": "object"
         },
         "LogLevel": {
@@ -141,6 +253,9 @@
         "database": {
             "$ref": "#/definitions/DatabaseConfig"
         },
+        "defaults": {
+            "$ref": "#/definitions/DefaultOptions"
+        },
         "digests": {
             "items": {
                 "$ref": "#/definitions/DigestData"
@@ -150,6 +265,9 @@
         "logging": {
             "$ref": "#/definitions/LoggingOptions",
             "description": "Settings to configure global logging defaults"
+        },
+        "port": {
+            "type": "number"
         }
     },
     "required": [

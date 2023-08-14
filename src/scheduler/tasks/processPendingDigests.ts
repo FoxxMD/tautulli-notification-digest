@@ -8,10 +8,10 @@ import {TautulliRequest} from "../../common/db/models/TautulliRequest.js";
 import {ErrorWithCause} from "pony-cause";
 import {buildMessages} from "../../discord/builder.js";
 
-export const processPendingDigests = (digest: DigestData, parentLogger: AppLogger) => {
-    const digestLogger = parentLogger.child({labels: ['Digest']}, mergeArr);
+export const processPendingDigests = (id: string, digest: DigestData, parentLogger: AppLogger) => {
+    const digestLogger = parentLogger.child({labels: [`Digest ${id}`]}, mergeArr);
     return new AsyncTask(
-        'Digest',
+        `Digest - ${id}`,
         (): Promise<any> => {
             return PromisePool
                 .withConcurrency(1)
