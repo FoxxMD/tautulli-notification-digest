@@ -1,6 +1,6 @@
 import {AppLogger} from "../common/logging.js";
 import {DigestData, DiscordOptions} from "../common/infrastructure/OperatorConfig.js";
-import {TautulliRequestData, TautulliRequestFileData} from "../common/infrastructure/Atomic.js";
+import {FileData, TautulliRequestData, TautulliRequestFileData} from "../common/infrastructure/Atomic.js";
 import {mergeArr} from "../utils/index.js";
 import {APIEmbed, AttachmentBuilder, BaseMessageOptions} from "discord.js";
 import {ErrorWithCause} from "pony-cause";
@@ -23,7 +23,7 @@ export const buildMessages = (digest: DigestData, pending: TautulliRequestData[]
     } = digest;
 
     let currEmbeds: (APIEmbed)[] = [];
-    let currImages: [Buffer, string][] = [];
+    let currImages: FileData[] = [];
 
     for (const req of pending) {
         const requestEmbeds = req.content.embeds as APIEmbed[];
@@ -33,16 +33,16 @@ export const buildMessages = (digest: DigestData, pending: TautulliRequestData[]
             if (embed.image !== undefined) {
                 const imageData = allImages.filter(x => x.tautulliRequestId === req.id && embed.image.url.includes(x.filename));
                 for (const i of imageData) {
-                    if (!currImages.some(([b, n]) => n === i.filename)) {
-                        currImages.push([i.content, i.filename]);
+                    if (!currImages.some((ci) => ci.filename === i.filename)) {
+                        currImages.push(i);
                     }
                 }
             }
             if (embed.thumbnail !== undefined) {
                 const imageData = allImages.filter(x => x.tautulliRequestId === req.id && embed.thumbnail.url.includes(x.filename));
                 for (const i of imageData) {
-                    if (!currImages.some(([b, n]) => n === i.filename)) {
-                        currImages.push([i.content, i.filename]);
+                    if (!currImages.some((ci) => ci.filename === i.filename)) {
+                        currImages.push(i);
                     }
                 }
             }
@@ -66,7 +66,7 @@ export const buildMessages = (digest: DigestData, pending: TautulliRequestData[]
     return [messages, events];
 }
 
-export const buildMessage = (options: DiscordOptions, currEmbeds: (APIEmbed)[], currImages: [Buffer, string][]): BaseMessageOptions => {
+export const buildMessage = (options: DiscordOptions = {}, currEmbeds: (APIEmbed)[], currImages: FileData[]): BaseMessageOptions => {
 
     const {
         defaultImageFormat = 'image',
@@ -89,14 +89,14 @@ export const buildMessage = (options: DiscordOptions, currEmbeds: (APIEmbed)[], 
     }
 
     // remove duplicate images
-    const dedupedImages = currImages.reduce((acc, curr) => {
-        if (!acc.some(x => x[1] === curr[1])) {
+    const dedupedImages = currImages.reduce((acc: FileData[], curr) => {
+        if (!acc.some(x => x.filename === curr.filename)) {
             return acc.concat(curr);
         }
     }, []);
     const attachments: AttachmentBuilder[] = [];
     for (const f of dedupedImages) {
-        const file = new AttachmentBuilder(f[0], {name: f[1]});
+        const file = new AttachmentBuilder(f.content, {name: f.filename});
         attachments.push(file);
     }
 

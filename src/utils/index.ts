@@ -112,3 +112,18 @@ export const chunk = <T>(arr: T[], size: number): T[][] =>
     Array.from({length: Math.ceil(arr.length / size)}, (v, i) =>
         arr.slice(i * size, i * size + size)
     );
+
+export const randomNumber = (max: number = 100) => {
+    return Math.floor(Math.random() * max);
+}
+
+export const uniqueRandomNumber = (max: number = 100) => {
+    const existing: number[] = [];
+    return () => {
+        const num = randomNumber(max);
+        if (!existing.includes(num)) {
+            existing.push(num);
+            return num;
+        }
+    }
+}

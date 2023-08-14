@@ -1,4 +1,4 @@
-import {OperatorConfig} from "../src/common/infrastructure/OperatorConfig.js";
+import {DigestData, OperatorConfig} from "../src/common/infrastructure/OperatorConfig.js";
 import dayjs, {Dayjs} from "dayjs";
 import {LoremIpsum} from "lorem-ipsum";
 import {promises} from "fs";
@@ -6,8 +6,11 @@ import path from 'path';
 import {pickRandom, readFile} from "../src/utils/io.js";
 import {APIEmbedImage, BaseMessageOptions} from "discord.js";
 import crypto from 'crypto';
-import {FileData} from "../src/common/infrastructure/Atomic.js";
+import {FileData, TautulliRequestData, TautulliRequestFileData} from "../src/common/infrastructure/Atomic.js";
+import {randomNumber} from "../src/utils/index.js";
+import {projectDir} from "../src/common/index.js";
 
+const imageDir = path.join(projectDir, 'tests/assets/images');
 let posterFiles: string[] = [];
 
 const posterColors = [
@@ -35,16 +38,19 @@ const dummyDescription = new LoremIpsum({
     }
 });
 
-const memoryConfig: OperatorConfig = {
+export const defaultTestDigest: DigestData = {
+    slug: 'test',
+    // every day at 12:00 pm
+    cron: '0 12 * * *',
+    discord: {
+        webhook: process.env.DISCORD_WEBHOOK ?? 'MY_WEBHOOK',
+    }
+}
+
+
+export const memoryConfig: OperatorConfig = {
     digests: [
-        {
-            slug: 'test',
-            // every day at 12:00 pm
-            cron: '0 12 * * *',
-            discord: {
-                webhook: process.env.DISCORD_WEBHOOK ?? 'MY_WEBHOOK',
-            }
-        }
+        defaultTestDigest
     ]
 }
 
@@ -54,6 +60,19 @@ export interface DummyEventOptions {
     thumbnail?: 'url' | 'file'
     title?: string
     content?: string
+}
+
+export const getDummyRequest = async (opts: DummyEventOptions & {
+    id?: number
+} = {}): Promise<[TautulliRequestData, TautulliRequestFileData?]> => {
+    const [requestData, imageData] = await getDummyEvent(opts);
+    const id = opts.id ?? randomNumber();
+    return [
+        {
+            id,
+            content: requestData
+        }, imageData !== undefined ? {tautulliRequestId: id, ...imageData} : undefined
+    ];
 }
 
 export const getDummyEvent = async (opts: DummyEventOptions = {}): Promise<[BaseMessageOptions, FileData?]> => {
@@ -113,9 +132,9 @@ export const getDummyEvent = async (opts: DummyEventOptions = {}): Promise<[Base
 
 const getRandomPosterFile = async () => {
     if (posterFiles.length === 0) {
-        posterFiles = await promises.readdir(path.join('../assets'));
+        posterFiles = await promises.readdir(imageDir);
     }
-    return await readFile(pickRandom(posterFiles));
+    return await readFile(path.join(imageDir, pickRandom(posterFiles)));
 }
 
 export const getRandomPosterUrl = (text: string = dummyTitle.generateWords(2)) => {
