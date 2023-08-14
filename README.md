@@ -3,7 +3,6 @@
 tautuilli-notification-digest (TND) creates "digest" (timed summary) notifications of **Media Added** events for discord using [Tautulli's](https://tautulli.com/) discord [notification agent](https://github.com/Tautulli/Tautulli/wiki/Notification-Agents-Guide#discord).
 
 <!-- TOC -->
-* [tautuilli-notification-digest](#tautuilli-notification-digest)
 * [What Does It Do?](#what-does-it-do)
 * [Install](#install)
   * [Docker](#docker)
