@@ -110,11 +110,7 @@ Add [environmental variables](https://docs.docker.com/engine/reference/commandli
 docker run -e DISCORD_WEBHOOK="https://discord.com/api/webhooks/606873513" -e CRON="0 17 * * *" ... ghcr.io/foxxmd/tautuilli-notification-digest
 ```
 
-**NOTE: You should still bind a folder into the container in order to persist your data!**
-
-```shell
-docker run -v /host/path/to/data:/config -e DISCORD_WEBHOOK="https://discord.com/api/webhooks/606873513" -e CRON="0 17 * * *" ... ghcr.io/foxxmd/tautuilli-notification-digest
-```
+**NOTE: You should still [bind a folder into the container](#docker-3) in order to persist your data!**
 
 #### Local
 
@@ -154,7 +150,7 @@ The below run examples will send one summary digest notification a day to discor
 **Note:** When using a `bridge` network (docker default) make sure you map the correct server port (8078 by default) from the container to host.
 
 ```shell
-docker run -e DISCORD_WEBHOOK="https://discord.com/api/webhooks/606873513" -e CRON="0 17 * * *" -p 8078:8078 ghcr.io/foxxmd/tautuilli-notification-digest
+docker run -v /host/path/to/data:/config -e DISCORD_WEBHOOK="https://discord.com/api/webhooks/606873513" -e CRON="0 17 * * *" -p 8078:8078 ghcr.io/foxxmd/tautuilli-notification-digest
 ```
 
 ## Local
@@ -277,7 +273,7 @@ TND detects duplicates by comparing the **title of the message sent by Tautuilli
 Behavior options are:
 
 * `'all'` - Prevent **any** notification that has been processed by TND before from being future digests
-* `'sessions'` (default) - Prevent duplicate notifications within one session IE only unique pending notifications -- if a duplicate is detected it is used instead of the original b/c we assume metadata may have changed
+* `'session'` (default) - Prevent duplicate notifications within one session IE only unique pending notifications -- if a duplicate is detected it is used instead of the original b/c we assume metadata may have changed
 * `'never'` - Always allow duplicates
 
 # API
