@@ -164,6 +164,7 @@ export const parseConfigFromSources = async () => {
                 };
             }
         }
+        mergedConfig.digests.push(digest);
     }
 
     if (defaults !== undefined) {
