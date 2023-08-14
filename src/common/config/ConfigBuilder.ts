@@ -110,6 +110,25 @@ export const parseConfigFromSources = async () => {
         arrayMerge: overwriteMerge,
     }) as OperatorJsonConfig;
 
+    const {
+        defaults,
+    } = mergedConfig;
+
+    if (defaults !== undefined) {
+        for (const digest of mergedConfig.digests) {
+            if (defaults.webhook !== undefined && digest.discord.webhook === undefined || digest.discord.webhook === '') {
+                digest.discord.webhook = defaults.webhook;
+            }
+            if (defaults.dedup !== undefined && digest.dedup === undefined) {
+                digest.dedup = defaults.dedup;
+            }
+            if (defaults.discordOptions !== undefined) {
+                const existing = digest.discord.options ?? {};
+                digest.discord.options = {...defaults.discordOptions, ...existing};
+            }
+        }
+    }
+
     return mergedConfig as OperatorConfig;
 }
 
