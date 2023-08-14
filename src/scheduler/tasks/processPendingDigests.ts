@@ -48,6 +48,7 @@ export const processPendingDigests = (digest: DigestData, parentLogger: AppLogge
                         try {
                             await client.send(message);
                             sentEvents += message.includedEvents;
+                            sentMessages++;
                         } catch (e) {
                             logger.error(new ErrorWithCause('Failed to send Plex embed', {cause: e}));
                         } finally {

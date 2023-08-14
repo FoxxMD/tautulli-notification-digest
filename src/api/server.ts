@@ -7,6 +7,8 @@ import {tautulliFormMiddleware} from "./tautulliFormMiddleware.js";
 import {IncomingFileData} from "../common/infrastructure/Atomic.js";
 import {TautulliRequest} from "../common/db/models/TautulliRequest.js";
 import {ErrorWithCause} from "pony-cause";
+import {APIEmbed} from "discord.js";
+import dayjs from "dayjs";
 
 const app = addAsync(express());
 const router = Router();
@@ -18,7 +20,7 @@ app.use(router);
 export const initServer = async (config: OperatorConfig, parentLogger: AppLogger) => {
 
     const apiLogger = parentLogger.child({labels: ['API']}, mergeArr);
-    const ingressLogger = parentLogger.child({labels: ['Tautulli Request']}, mergeArr);
+    const ingressLogger = apiLogger.child({labels: ['Tautulli Request']}, mergeArr);
     try {
         const {
             port = envPort
@@ -38,10 +40,56 @@ export const initServer = async (config: OperatorConfig, parentLogger: AppLogger
 
                 ingressLogger.verbose(`Received valid payload with ${images.length} images`);
 
+                const digest = config.digests.find(x => x.slug.toLocaleLowerCase() === slug.toLocaleLowerCase());
+                let dedupBehavior = 'never';
+                if (digest !== undefined) {
+                    const {
+                        dedup = 'session'
+                    } = digest;
+                    dedupBehavior = dedup;
+                }
+
+                let incomingStatus = 'pending';
+                let title = `Event Added at ${dayjs().format()}`;
+
+                if (payload.embeds.length > 0) {
+                    // assuming only sending one embed...since this is how tautulli works
+                    const embed = payload.embeds[0] as APIEmbed;
+                    title = embed.title;
+                    if (dedupBehavior === 'session') {
+                        const origSessionRequest = await TautulliRequest.findOne({
+                            where: {
+                                title: embed.title,
+                                slug,
+                                status: 'pending'
+                            }
+                        });
+                        if(origSessionRequest !== null && origSessionRequest !== undefined) {
+                            // drop this one in favor of the newer one (newer probably has updated metadata)
+                            ingressLogger.info(`Incoming payload has same title as existing pending Request ${origSessionRequest.id} -- ${embed.title} -- Digest config specifies dedup behavior as 'session' so will drop exiting in favor of newer payload.`);
+                            origSessionRequest.status = 'dedupe';
+                            await origSessionRequest.save();
+                        }
+                    } else if(dedupBehavior === 'all') {
+                        const origSessionRequest = await TautulliRequest.findOne({
+                            where: {
+                                title: embed.title,
+                                slug,
+                            }
+                        });
+                        if(origSessionRequest !== null && origSessionRequest !== undefined) {
+                            ingressLogger.info(`Incoming payload has same title as existing Request ${origSessionRequest.id} -- ${embed.title} -- Digest config specifies dedup behavior as 'all' so will not add incoming request as pending.`);
+                            incomingStatus = 'dedup';
+                        }
+                    }
+                }
+
+
                 const treq = await TautulliRequest.create({
                     slug,
-                    status: 'pending',
-                    content: payload
+                    status: incomingStatus,
+                    content: payload,
+                    title,
                 });
 
                 for (const image of images) {
@@ -52,7 +100,7 @@ export const initServer = async (config: OperatorConfig, parentLogger: AppLogger
                     });
                 }
 
-                ingressLogger.verbose(`Saved new Request ${treq.id} with ${images.length} images`);
+                ingressLogger.verbose(`Saved new Request ${treq.id} for '${title}' with ${images.length} images`);
 
                 res.send('OK');
 

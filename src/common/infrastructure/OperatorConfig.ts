@@ -25,6 +25,7 @@ export interface OperatorJsonConfig {
     logging?: LoggingOptions,
     database?: DatabaseConfig,
     digests: DigestData[]
+    defaults?: DefaultOptions
     port?: number
 }
 
@@ -55,26 +56,35 @@ export const discordOptionsDef: DiscordOptions = {
     text: false,
     list: false,
 };
-    export const discordOptionDefObj = (): Required<DiscordOptions> => ({
+export const discordOptionDefObj = (): Required<DiscordOptions> => ({
     eventsPerMessage: 1000,
     overflowTruncate: 20,
     poster: 0,
     thumbnail: 2,
     text: false,
     list: false,
-})
+});
 
 export interface DiscordData {
     webhook: string
     options?: DiscordOptions
 }
 
+export type DedupBehavior = 'all' | 'session' | 'never';
+
 export interface DigestData {
     slug: string
     cron: string
     discord: DiscordData
+    dedup?: DedupBehavior
 }
 
 export interface DatabaseConfig extends Pick<Options, 'username' | 'password' | 'host' | 'port' | 'database'> {
     dialect: 'sqlite' | 'mariadb' | 'mysql'
+}
+
+export interface DefaultOptions {
+    dedup?: DedupBehavior
+    webhook?: string
+    discordOptions?: DiscordOptions
 }

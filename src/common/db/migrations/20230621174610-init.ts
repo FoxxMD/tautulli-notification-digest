@@ -21,6 +21,11 @@ const migration: Migration = {
                 allowNull: false,
                 unique: false
             },
+            title: {
+                type: Sequelize.STRING,
+                allowNull: false,
+                unique: false
+            },
             content: {
                 type: Sequelize.JSON,
                 allowNull: true,

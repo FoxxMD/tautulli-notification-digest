@@ -21,6 +21,7 @@ export class TautulliRequest extends Model<InferAttributes<TautulliRequest>, Inf
     declare slug: string;
     declare status: string
     declare content: BaseMessageOptions;
+    declare title: string
 
     declare createdAt: CreationOptional<Date>;
     declare updatedAt: CreationOptional<Date>;
@@ -44,6 +45,7 @@ export const init = (sequelize: Sequelize) => {
             type: DataTypes.STRING,
             defaultValue: 'pending'
         },
+        title: DataTypes.STRING,
         status: DataTypes.STRING,
         content: DataTypes.JSON,
         createdAt: DataTypes.DATE,
