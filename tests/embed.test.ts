@@ -70,7 +70,7 @@ describe('Embed Collapsing', function () {
         dotenv.config({path: path.join(projectDir, '.env')});
     });
 
-    it('Do not collapse when using poster', async function () {
+    it('Use poster for default config when only one notification', async function () {
         const rand = uniqueRandomNumber();
         const [event, image] = await getDummyRequest({id: rand()});
         const images = image !== undefined ? [image] : [];
@@ -79,6 +79,33 @@ describe('Embed Collapsing', function () {
 
         assert.exists((messages[0].embeds[0] as EmbedBuilder).data.image);
         assert.notExists((messages[0].embeds[0] as EmbedBuilder).data.thumbnail);
+        sendMessages(defaultTestDigest(), messages);
+        return;
+    });
+
+    it('Collapses to poster', async function (done) {
+        const rand = uniqueRandomNumber();
+        const events: TautulliRequestData[] = [];
+        const images: TautulliRequestFileData[] = [];
+        for(let i = 0; i < 3; i++) {
+            const [event, image] = await getDummyRequest({id: rand()});
+            events.push(event);
+            if(image !== undefined) {
+                images.push(image);
+            }
+        }
+
+        const digest = defaultTestDigest();
+        digest.discord.options = {
+            poster: 0,
+            thumbnail: false,
+            text: false,
+            list: false
+        }
+
+        const [messages, eventCount] = buildMessages(digest, events, images);
+
+        assert.exists((messages[0].embeds[0] as EmbedBuilder).data.image);
         sendMessages(defaultTestDigest(), messages);
         return;
     });

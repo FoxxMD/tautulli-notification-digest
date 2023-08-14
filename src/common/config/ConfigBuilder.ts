@@ -123,10 +123,11 @@ export const parseConfigFromSources = async () => {
     const envWebhook = process.env.DISCORD_WEBHOOK;
     const envCron = process.env.CRON;
     const envEmbedType = process.env.FORMAT;
+    const envSlug = process.env.SLUG;
 
     if (envWebhook !== undefined && envCron !== undefined && mergedConfig.digests.length === 0) {
         const digest: DigestData = {
-            slug: '',
+            slug: envSlug ?? 'my-digest',
             cron: envCron,
             discord: {
                 webhook: envWebhook

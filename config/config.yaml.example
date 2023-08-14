@@ -1,3 +1,31 @@
 logging:
+  # default logging level ot console and file
   level: 'debug'
+  # specify a different log level for file logging
   file: 'warn'
+digests:
+    # URL ending Tautulli uses for Webhook URL
+    # Use this if setting up multiple digests
+    # EX slug: 'my-digest' => Tautulli Webhook Url 'http://localhost:8078/my-digest'
+  - slug: 'my-digest'
+    # run at 5pm
+    # https://crontab.guru
+    cron: '0 17,0 * * *'
+    # cron can also be a list of expression to set up different jobs for
+#    cron:
+#      - '0 17,0 * * *'
+#      # every hour
+#      - '0 */1 * * *'
+
+    # don't allow duplicate notifications for any pending notifications
+    dedup: 'session'
+    discord:
+      webhook: 'https://discord.com/api/webhooks/6068898134543123/sLjg0poVgpzWUpXf3_Cn05wL6i7FvoPL6ihUxrl8oeOelPrO'
+      options:
+        # number of items in the overflow embed before truncating and displaying remainder as a count
+        overflowTruncate: 15
+        # See README -> Embed Formats
+        list: 20
+        text: 15
+        thumbnail: 6
+        poster: 0
