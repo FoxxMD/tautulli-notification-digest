@@ -38,21 +38,21 @@ const dummyDescription = new LoremIpsum({
     }
 });
 
-export const defaultTestDigest: DigestData = {
+export const defaultTestDigest = (): DigestData => ({
     slug: 'test',
     // every day at 12:00 pm
     cron: '0 12 * * *',
     discord: {
         webhook: process.env.DISCORD_WEBHOOK ?? 'MY_WEBHOOK',
     }
-}
+})
 
 
-export const memoryConfig: OperatorConfig = {
+export const memoryConfig = (): OperatorConfig => ({
     digests: [
-        defaultTestDigest
+        defaultTestDigest()
     ]
-}
+});
 
 export interface DummyEventOptions {
     timestamp?: Dayjs
@@ -138,7 +138,7 @@ const getRandomPosterFile = async () => {
 }
 
 export const getRandomPosterUrl = (text: string = dummyTitle.generateWords(2)) => {
-    return `https://dummyimage.com/250x1:1.5/${getRandomColor()}/ffffff.jpg?text=${text.replace(' ', '+')}`;
+    return `https://dummyimage.com/250x1:1.5/${getRandomColor()}/ffffff.jpg?text=${text.replace(/\s/g, '+')}`;
 }
 
 const getRandomColor = (): string => {

@@ -1,13 +1,18 @@
 import {AppLogger} from "../common/logging.js";
 import {DigestData, DiscordOptions} from "../common/infrastructure/OperatorConfig.js";
-import {FileData, TautulliRequestData, TautulliRequestFileData} from "../common/infrastructure/Atomic.js";
+import {
+    EventAwareBaseMessageOptions,
+    FileData,
+    TautulliRequestData,
+    TautulliRequestFileData
+} from "../common/infrastructure/Atomic.js";
 import {mergeArr} from "../utils/index.js";
 import {APIEmbed, AttachmentBuilder, BaseMessageOptions} from "discord.js";
 import {ErrorWithCause} from "pony-cause";
 
-export const buildMessages = (digest: DigestData, pending: TautulliRequestData[], allImages: TautulliRequestFileData[]) => {
+export const buildMessages = (digest: DigestData, pending: TautulliRequestData[], allImages: TautulliRequestFileData[]): [EventAwareBaseMessageOptions[], number] => {
 
-    const messages: BaseMessageOptions[] = [];
+    const messages: EventAwareBaseMessageOptions[] = [];
     let events: number = 0;
 
     const {
@@ -59,14 +64,12 @@ export const buildMessages = (digest: DigestData, pending: TautulliRequestData[]
     if (currEmbeds.length !== 0) {
         events += currEmbeds.length;
         messages.push(buildMessage(digest.discord.options, currEmbeds, currImages));
-        currEmbeds = [];
-        currImages = [];
     }
 
     return [messages, events];
 }
 
-export const buildMessage = (options: DiscordOptions = {}, currEmbeds: (APIEmbed)[], currImages: FileData[]): BaseMessageOptions => {
+export const buildMessage = (options: DiscordOptions = {}, currEmbeds: (APIEmbed)[], currImages: FileData[]): EventAwareBaseMessageOptions => {
 
     const {
         defaultImageFormat = 'image',
@@ -103,6 +106,7 @@ export const buildMessage = (options: DiscordOptions = {}, currEmbeds: (APIEmbed
     return {
         content: `${currEmbeds.length} Items added to Plex`,
         embeds: currEmbeds,
-        files: attachments
+        files: attachments,
+        includedEvents: currEmbeds.length
     }
 }

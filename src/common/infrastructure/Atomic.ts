@@ -130,3 +130,7 @@ export interface FileData {
     content: Buffer
     filename: string
 }
+
+export interface EventAwareBaseMessageOptions extends BaseMessageOptions {
+    includedEvents: number
+}
