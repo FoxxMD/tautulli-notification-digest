@@ -5,7 +5,12 @@ import {readFile, readFileToString} from "../../utils/io.js";
 import {ErrorWithCause} from "pony-cause";
 import {parseFromYamlToObject} from "./ConfigUtil.js";
 import {SimpleError} from "../../utils/Errors.js";
-import {OperatorConfig, OperatorJsonConfig, YamlOperatorConfigDocument} from "../infrastructure/OperatorConfig.js";
+import {
+    DigestData,
+    OperatorConfig,
+    OperatorJsonConfig,
+    YamlOperatorConfigDocument
+} from "../infrastructure/OperatorConfig.js";
 import {Document as YamlDocument} from "yaml";
 import {createAjvFactory} from "../../utils/validation.js";
 import {Schema} from "ajv";
@@ -113,6 +118,52 @@ export const parseConfigFromSources = async () => {
     const {
         defaults,
     } = mergedConfig;
+
+
+    const envWebhook = process.env.DISCORD_WEBHOOK;
+    const envCron = process.env.CRON;
+    const envEmbedType = process.env.FORMAT;
+
+    if (envWebhook !== undefined && envCron !== undefined && mergedConfig.digests.length === 0) {
+        const digest: DigestData = {
+            slug: '',
+            cron: envCron,
+            discord: {
+                webhook: envWebhook
+            }
+        }
+        if (envEmbedType !== undefined) {
+            if (envEmbedType.toLowerCase() === 'poster') {
+                digest.discord.options = {
+                    poster: 0,
+                    thumbnail: false,
+                    list: false,
+                    text: false
+                };
+            } else if (envEmbedType.toLowerCase() === 'thumbnail') {
+                digest.discord.options = {
+                    poster: false,
+                    thumbnail: 0,
+                    list: false,
+                    text: false
+                };
+            } else if (envEmbedType.toLowerCase() === 'text') {
+                digest.discord.options = {
+                    poster: false,
+                    thumbnail: false,
+                    list: false,
+                    text: 0
+                };
+            } else if (envEmbedType.toLowerCase() === 'list') {
+                digest.discord.options = {
+                    poster: false,
+                    thumbnail: false,
+                    list: 0,
+                    text: false
+                };
+            }
+        }
+    }
 
     if (defaults !== undefined) {
         for (const digest of mergedConfig.digests) {
