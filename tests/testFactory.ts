@@ -110,7 +110,7 @@ export const getDummyEvent = async (opts: DummyEventOptions = {}): Promise<[Base
                     timestamp: timestamp.toISOString(),
                     image: embedImage,
                     description: dummyDescription.generateParagraphs(1),
-                    url: "https://thetvdb.com",
+                    url: `https://thetvdb.com/?tab=series&id=${randomNumber(100000)}`,
                     fields: [
                         {
                             "name": "View Details",

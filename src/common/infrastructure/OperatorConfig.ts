@@ -28,11 +28,41 @@ export interface OperatorJsonConfig {
     port?: number
 }
 
-export interface DiscordOptions {
-    defaultImageFormat?: 'image' | 'thumbnail'
-    collapseToThumbnail?: number
-    eventsPerMessage?: number
+export interface EventFormatOptions {
+    enabled?: boolean
+    threshold: number
+    truncateDescription?: number
+    includeLinks?: boolean
 }
+
+export interface EventFormats {
+    poster?: false | number | EventFormatOptions
+    thumbnail?: false | number | EventFormatOptions
+    text?: false | number | EventFormatOptions
+    list?: false | number
+}
+
+export interface DiscordOptions extends EventFormats {
+    eventsPerMessage?: number
+    overflowTruncate?: number
+}
+
+export const discordOptionsDef: DiscordOptions = {
+    eventsPerMessage: 1000,
+    overflowTruncate: 20,
+    poster: 0,
+    thumbnail: 2,
+    text: false,
+    list: false,
+};
+    export const discordOptionDefObj = (): Required<DiscordOptions> => ({
+    eventsPerMessage: 1000,
+    overflowTruncate: 20,
+    poster: 0,
+    thumbnail: 2,
+    text: false,
+    list: false,
+})
 
 export interface DiscordData {
     webhook: string

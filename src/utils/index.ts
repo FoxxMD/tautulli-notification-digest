@@ -1,5 +1,12 @@
 import dayjs, {Dayjs} from "dayjs";
 import {AppLogger} from "../common/logging.js";
+import {
+    replaceResultTransformer,
+    stripIndentTransformer,
+    TemplateTag,
+    TemplateTransformer,
+    trimResultTransformer
+} from 'common-tags'
 
 export const overwriteMerge = (destinationArray: any[], sourceArray: any[], options: any): any[] => sourceArray;
 
@@ -142,4 +149,27 @@ export function parseBool(value: any, prev: any = false): boolean {
         return usedVal;
     }
     throw new Error(`'${value.toString()}' is not a boolean value.`);
+}
+
+const markdownListTransformer: TemplateTransformer = {
+    onSubstitution(substitution, resultSoFar, context) {
+        if (Array.isArray(substitution)) {
+            return substitution.map(x => `* ${x}`).join('\n');
+        }
+        return substitution;
+    }
+}
+
+export const markdownTag = new TemplateTag(
+    markdownListTransformer,
+    stripIndentTransformer('all'),
+    trimResultTransformer()
+);
+
+export const truncateStringToLength = (length: any, truncStr = '...') => (val: any = '') =>  {
+    if(val === null) {
+        return '';
+    }
+    const str = typeof val !== 'string' ? val.toString() : val;
+    return str.length > length ? `${str.slice(0, length)}${truncStr}` : str;
 }
