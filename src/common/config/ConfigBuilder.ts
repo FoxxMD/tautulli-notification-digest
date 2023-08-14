@@ -1,7 +1,7 @@
 import winston, {Logger} from "@foxxmd/winston";
 import path from "path";
 import {dataDir, projectDir} from "../index.js";
-import {readFile} from "../../utils/io.js";
+import {readFile, readFileToString} from "../../utils/io.js";
 import {ErrorWithCause} from "pony-cause";
 import {parseFromYamlToObject} from "./ConfigUtil.js";
 import {SimpleError} from "../../utils/Errors.js";
@@ -77,7 +77,7 @@ export const parseConfigFromSources = async () => {
     initLogger.debug(`Config File Location: ${operatorConfig}`);
     let rawConfig = '';
     try {
-        rawConfig = await readFile(operatorConfig, {throwOnNotFound: false}) ?? '';
+        rawConfig = await readFileToString(operatorConfig, {throwOnNotFound: false}) ?? '';
     } catch (e) {
         throw new ErrorWithCause('Could not read config file', {cause: e});
     }

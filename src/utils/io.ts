@@ -35,11 +35,18 @@ export const fileOrDirectoryIsWriteable = (location: string) => {
     }
 }
 
-export async function readFile(this: any, path: any, {throwOnNotFound = true} = {}): Promise<string | undefined> {
+export async function readFileToString(path: any, opts = {}): Promise<string | undefined> {
+    const buffer = await readFile(path, opts);
+    if(buffer !== undefined) {
+        return buffer.toString() as unknown as string;
+    }
+    return undefined;
+}
+
+export async function readFile(path: any, {throwOnNotFound = true} = {}): Promise<Buffer | undefined> {
     try {
         await promises.access(path, constants.R_OK);
-        const data = await promises.readFile(path);
-        return data.toString() as unknown as string;
+        return await promises.readFile(path);
     } catch (e) {
         const {code} = e;
         if (code === 'ENOENT') {
@@ -51,4 +58,17 @@ export async function readFile(this: any, path: any, {throwOnNotFound = true} = 
         }
         throw new ErrorWithCause(`Encountered error while parsing file: ${path}`, {cause: e})
     }
+}
+
+export const randomFilePath = async (location: string) => {
+    const directoryFiles = await promises.readdir(location);
+    return pickRandom(directoryFiles);
+}
+
+export const pickRandom = <T>(list: T[]): T => {
+    let max = list.length - 1;
+    let min = 0;
+
+    let index = Math.round(Math.random() * (max - min) + min);
+    return  list[index];
 }

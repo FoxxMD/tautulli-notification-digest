@@ -13,13 +13,14 @@ import {
 } from "sequelize";
 import {TautulliRequestFile} from "./TautulliRequestFile.js";
 import {BaseMessageOptions} from "discord.js";
+import {TautulliRequestData} from "../../infrastructure/Atomic.js";
 
-export class TautulliRequest extends Model<InferAttributes<TautulliRequest>, InferCreationAttributes<TautulliRequest>> {
+export class TautulliRequest extends Model<InferAttributes<TautulliRequest>, InferCreationAttributes<TautulliRequest>> implements TautulliRequestData {
 
     declare id: CreationOptional<number>;
     declare slug: string;
     declare status: string
-    declare content?: BaseMessageOptions;
+    declare content: BaseMessageOptions;
 
     declare createdAt: CreationOptional<Date>;
     declare updatedAt: CreationOptional<Date>;

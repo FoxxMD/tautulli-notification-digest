@@ -8,14 +8,15 @@ import {
     Model, ForeignKey,
 } from "sequelize";
 import {TautulliRequest} from "./TautulliRequest.js";
+import {TautulliRequestFileData} from "../../infrastructure/Atomic.js";
 
-export class TautulliRequestFile extends Model<InferAttributes<TautulliRequestFile>, InferCreationAttributes<TautulliRequestFile>> {
+export class TautulliRequestFile extends Model<InferAttributes<TautulliRequestFile>, InferCreationAttributes<TautulliRequestFile>> implements TautulliRequestFileData {
 
     declare id: CreationOptional<number>;
     declare tautulliRequestId: ForeignKey<TautulliRequest['id']>
     declare content: Buffer;
     declare mimeType?: string;
-    declare filename?: string;
+    declare filename: string;
 
     declare createdAt: CreationOptional<Date>;
     declare updatedAt: CreationOptional<Date>;
@@ -33,7 +34,10 @@ export const init = (sequelize: Sequelize) => {
             allowNull: false,
         },
         mimeType: DataTypes.STRING,
-        filename: DataTypes.STRING,
+        filename: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
         createdAt: DataTypes.DATE,
         updatedAt: DataTypes.DATE,
     }, {

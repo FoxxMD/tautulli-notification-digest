@@ -1,4 +1,5 @@
 import {MESSAGE} from 'triple-beam';
+import {BaseMessageOptions} from "discord.js";
 
 export type LogLevel = "error" | "warn" | "safety" | "info" | "verbose" | "debug";
 export const logLevels = ['error', 'warn', 'info', 'verbose', 'debug'];
@@ -112,4 +113,20 @@ export interface IncomingFileData {
     mimetype: string
     fieldName?: string
     size: number
+}
+
+export interface TautulliRequestData {
+    id: number,
+    content: BaseMessageOptions
+}
+
+export interface TautulliRequestFileData extends FileData {
+    tautulliRequestId: number
+    content: Buffer
+    filename: string
+}
+
+export interface FileData {
+    content: Buffer
+    filename: string
 }
