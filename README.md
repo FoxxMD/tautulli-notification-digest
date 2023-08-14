@@ -2,6 +2,39 @@
 
 tautuilli-notification-digest (TND) creates "digest" (timed summary) notifications of **Media Added** events for discord using [Tautulli's](https://tautulli.com/) discord [notification agent](https://github.com/Tautulli/Tautulli/wiki/Notification-Agents-Guide#discord).
 
+<!-- TOC -->
+* [tautuilli-notification-digest](#tautuilli-notification-digest)
+* [What Does It Do?](#what-does-it-do)
+* [Install](#install)
+  * [Docker](#docker)
+  * [Local (Node)](#local-node)
+* [Setup](#setup)
+  * [Tautulli](#tautulli)
+  * [Configuration](#configuration)
+    * [ENV](#env)
+      * [Docker](#docker-1)
+      * [Local](#local)
+    * [File](#file)
+      * [Docker](#docker-2)
+      * [Local](#local-1)
+* [Run](#run)
+  * [Docker](#docker-3)
+  * [Local](#local-2)
+* [Options](#options)
+  * [Embed Formats](#embed-formats)
+    * [Poster](#poster)
+    * [Thumbnail](#thumbnail)
+    * [Text](#text)
+    * [List](#list)
+    * [Embed Format Collapse](#embed-format-collapse)
+      * [Default Collapse Settings](#default-collapse-settings)
+      * [Overflow](#overflow)
+  * [Deduplication Behavior](#deduplication-behavior)
+* [API](#api)
+  * [Tautuilli Webhook](#tautuilli-webhook)
+  * [Run Pending Notifications](#run-pending-notifications)
+<!-- TOC -->
+
 # What Does It Do?
 
 Tautulli already provides an email "newsletter" that compiles triggered events (media added) from Plex and then sends it as one email at a set time.
@@ -77,6 +110,12 @@ Add [environmental variables](https://docs.docker.com/engine/reference/commandli
 docker run -e DISCORD_WEBHOOK="https://discord.com/api/webhooks/606873513" -e CRON="0 17 * * *" ... ghcr.io/foxxmd/tautuilli-notification-digest
 ```
 
+**NOTE: You should still bind a folder into the container in order to persist your data!**
+
+```shell
+docker run -v /host/path/to/data:/config -e DISCORD_WEBHOOK="https://discord.com/api/webhooks/606873513" -e CRON="0 17 * * *" ... ghcr.io/foxxmd/tautuilli-notification-digest
+```
+
 #### Local
 
 Export your variables before the run command or use a [.env file](https://www.codementor.io/@parthibakumarmurugesan/what-is-env-how-to-set-up-and-run-a-env-file-in-node-1pnyxw9yxj)
@@ -115,7 +154,7 @@ The below run examples will send one summary digest notification a day to discor
 **Note:** When using a `bridge` network (docker default) make sure you map the correct server port (8078 by default) from the container to host.
 
 ```shell
-docker -e DISCORD_WEBHOOK="https://discord.com/api/webhooks/606873513" -e CRON="0 17 * * *" -p 8078:8078 ghcr.io/foxxmd/tautuilli-notification-digest
+docker run -e DISCORD_WEBHOOK="https://discord.com/api/webhooks/606873513" -e CRON="0 17 * * *" -p 8078:8078 ghcr.io/foxxmd/tautuilli-notification-digest
 ```
 
 ## Local
