@@ -9,6 +9,7 @@ import {TautulliRequest} from "../common/db/models/TautulliRequest.js";
 import {ErrorWithCause} from "pony-cause";
 import {APIEmbed} from "discord.js";
 import dayjs from "dayjs";
+import {processPendingDigests} from "../common/funcs/processPendingDigests.js";
 
 const app = addAsync(express());
 const router = Router();
@@ -27,8 +28,19 @@ export const initServer = async (config: OperatorConfig, parentLogger: AppLogger
         } = config;
         const server = await app.listen(port);
 
+        app.postAsync('/api/:slug', async function (req, res, next) {
+            const digest = config.digests.find(x => x.slug.toLocaleLowerCase() === req.params.slug.toLocaleLowerCase());
+            if (digest === undefined) {
+                res.status(404).send(`No digest config exists for slug '${req.params.slug}'`);
+                return;
+            }
+            apiLogger.info(`Processing pending requests for slug ${digest.slug}`);
+            const results = await processPendingDigests(digest, apiLogger);
+            res.status(200).json(results);
+        });
+
         const tMiddle = tautulliFormMiddleware(apiLogger);
-        app.postAsync(/.+/, tMiddle, async function (req, res, next) {
+        app.postAsync(/^(?!api).+/, tMiddle, async function (req, res, next) {
 
             try {
                 const splitPath = req.path.split('/');
@@ -64,20 +76,20 @@ export const initServer = async (config: OperatorConfig, parentLogger: AppLogger
                                 status: 'pending'
                             }
                         });
-                        if(origSessionRequest !== null && origSessionRequest !== undefined) {
+                        if (origSessionRequest !== null && origSessionRequest !== undefined) {
                             // drop this one in favor of the newer one (newer probably has updated metadata)
                             ingressLogger.info(`Incoming payload has same title as existing pending Request ${origSessionRequest.id} -- ${embed.title} -- Digest config specifies dedup behavior as 'session' so will drop exiting in favor of newer payload.`);
                             origSessionRequest.status = 'dedupe';
                             await origSessionRequest.save();
                         }
-                    } else if(dedupBehavior === 'all') {
+                    } else if (dedupBehavior === 'all') {
                         const origSessionRequest = await TautulliRequest.findOne({
                             where: {
                                 title: embed.title,
                                 slug,
                             }
                         });
-                        if(origSessionRequest !== null && origSessionRequest !== undefined) {
+                        if (origSessionRequest !== null && origSessionRequest !== undefined) {
                             ingressLogger.info(`Incoming payload has same title as existing Request ${origSessionRequest.id} -- ${embed.title} -- Digest config specifies dedup behavior as 'all' so will not add incoming request as pending.`);
                             incomingStatus = 'dedup';
                         }

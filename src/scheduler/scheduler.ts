@@ -2,7 +2,7 @@ import {CronJob, SimpleIntervalJob, ToadScheduler} from "toad-scheduler";
 import {createHeartbeatTask} from "./tasks/heartbeatTask.js";
 import {OperatorConfig} from "../common/infrastructure/OperatorConfig.js";
 import {AppLogger} from "../common/logging.js";
-import {processPendingDigests} from "./tasks/processPendingDigests.js";
+import {createProcessPendingDigestsTask} from "./tasks/createProcessPendingDigestsTask.js";
 import {mergeArr} from "../utils/index.js";
 
 export const initScheduler = (config: OperatorConfig, parentLogger: AppLogger) => {
@@ -20,7 +20,7 @@ export const initScheduler = (config: OperatorConfig, parentLogger: AppLogger) =
             scheduler.addCronJob(new CronJob({
                     cronExpression: cron,
                 },
-                processPendingDigests(`${digest.name !== undefined ? `${digest.name} ` : ''}${cron}`, digest, parentLogger)));
+                createProcessPendingDigestsTask(`${digest.name !== undefined ? `${digest.name} ` : ''}${cron}`, digest, parentLogger)));
             logger.info(`Added Digest ${digest.slug} to run ${digest.cron}`);
         }
     }
