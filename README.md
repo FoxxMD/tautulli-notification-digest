@@ -4,6 +4,7 @@ tautuilli-notification-digest (TND) creates "digest" (timed summary) notificatio
 
 <!-- TOC -->
 * [What Does It Do?](#what-does-it-do)
+* [Quick Start](#quick-start)
 * [Install](#install)
   * [Docker](#docker)
   * [Local (Node)](#local-node)
@@ -45,6 +46,44 @@ This same functionality **does not exist** for notifications. This functionality
 <img src="/docs/assets/thumbnail-multiple.png"
 alt="thumbnail view" width="400">
 
+# Quick Start
+
+Assuming:
+
+* Host machine IP is 192.168.1.101
+  * Tautulli and TND will be installed on the same machine using Docker with bridge mode networking
+  * Discord webhook/notification agent already setup in Tautulli
+* You want the digest to be posted at 5pm Eastern Standard Time
+
+#### Setup Docker
+
+* Include environmental variables for:
+  * Your existing discord webhook from Tautulli discord notification agent using `DISCORD_WEBHOOK`
+  * The 5pm cron expression using `CRON`
+* Map the default port 8078
+
+```shell
+docker run -e DISCORD_WEBHOOK="https://discord.com/api/webhooks/606873513" -e CRON="0 17 * * *" -p 8078:8078 ghcr.io/foxxmd/tautuilli-notification-digest
+```
+
+TND endpoint is now available at `http://192.168.1.101:8078/my-digest`
+
+#### Modify Tautulli
+
+Edit your existing Tautuilli discord notification agent:
+
+* On the **Configuration** tab
+  * Change **Discord Webhook URL** to `http://192.168.1.101:8078/my-digest`
+  * Make sure these settings are set
+    * ✅ Include Rich Metadata Info
+    * ✅ Include Summary
+    * ✅ Include Link to Plex Web (optional)
+    * ❎ Use Poster Thumbnail
+* On the **Triggers**
+  * ✅ Recently Added
+
+**Save** your changes. TND is now setup and running.
+
 # Install
 
 ## Docker
@@ -69,11 +108,12 @@ You must first configure a [Tautulli discord notification agent.](https://github
 In your agent ensure these settings are used:
 
 * Configuration
-  * Discord Webhook Url
+  * Discord Webhook URL
     * **TND location + Slug (see below)**
   * ✅ Include Rich Metadata Info
   * ✅ Include Summary
   * ✅ Include Link to Plex Web (optional)
+  * ❎ Use Poster Thumbnail
 * Triggers
   * ✅ Recently Added
 
