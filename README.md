@@ -63,7 +63,7 @@ Assuming:
 * Map the default port 8078
 
 ```shell
-docker run -e DISCORD_WEBHOOK="https://discord.com/api/webhooks/606873513" -e CRON="0 17 * * *" -p 8078:8078 ghcr.io/foxxmd/tautuilli-notification-digest
+docker run -e TZ="America/New_York" -e DISCORD_WEBHOOK="https://discord.com/api/webhooks/606873513" -e CRON="0 17 * * *" -p 8078:8078 ghcr.io/foxxmd/tautuilli-notification-digest
 ```
 
 TND endpoint is now available at `http://192.168.1.101:8078/my-digest`
@@ -140,7 +140,9 @@ If you are fine with all default settings then TND can be configured using only 
 | DISCORD_WEBHOOK        | Yes       | `https://discord.com/api/webhooks/606873513` | The [discord webhook](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks) for a channel you want to post to. This would be the same hook you used when [setting up Tautulli notifications.](https://github.com/Tautulli/Tautulli/wiki/Notification-Agents-Guide#discord) |
 | CRON                   | Yes       | `0 17 * * *`                                 | A [cron expression](https://crontab.guru) for when TND should send notifications. The example sends a notification once a day at 5:00pm local time.                                                                                                                                             |
 | FORMAT                 | No        |                                              | Always use the specified embed format instead of collapsing for space. Options are: poster, thumbnail, text, list                                                                                                                                                                               |
-| PORT                   | No        | 8078                                         | The port the web server will listen for incoming events from Tautuilli                                                                                                                                                                                                                          |
+| PORT                   | No        | 8078                                         | The port the web server will listen for incoming events from Tautulli                                                                                                                                                                                                                           |
+| TZ                     | No        | America/New_York                             | [Timezone identifier](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List) to use. Defaults to UTC.                                                                                                                                                                               |
+
 #### Docker
 
 Add [environmental variables](https://docs.docker.com/engine/reference/commandline/run/#env) using the `-e flag` to your run command:
