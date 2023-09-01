@@ -61,9 +61,11 @@ Assuming:
   * Your existing discord webhook from Tautulli discord notification agent using `DISCORD_WEBHOOK`
   * The 5pm cron expression using `CRON`
 * Map the default port 8078
+* Create a volume to persist data
 
 ```shell
-docker run -e TZ="America/New_York" -e DISCORD_WEBHOOK="https://discord.com/api/webhooks/606873513" -e CRON="0 17 * * *" -p 8078:8078 -d ghcr.io/foxxmd/tautuilli-notification-digest
+docker volume create tnd_data
+docker run -e TZ="America/New_York" -e DISCORD_WEBHOOK="https://discord.com/api/webhooks/606873513" -e CRON="0 17 * * *" -p 8078:8078 -v tnd_data:/config -d ghcr.io/foxxmd/tautuilli-notification-digest
 ```
 
 TND endpoint is now available at `http://192.168.1.101:8078/my-digest`
@@ -145,13 +147,12 @@ If you are fine with all default settings then TND can be configured using only 
 
 #### Docker
 
-Add [environmental variables](https://docs.docker.com/engine/reference/commandline/run/#env) using the `-e flag` to your run command:
+Add [environmental variables](https://docs.docker.com/engine/reference/commandline/run/#env) using the `-e flag` and create a persistent volume for TND data:
 
 ```shell
-docker run -e DISCORD_WEBHOOK="https://discord.com/api/webhooks/606873513" -e CRON="0 17 * * *" ... -d ghcr.io/foxxmd/tautuilli-notification-digest
+docker volume create tnd_data
+docker run -e DISCORD_WEBHOOK="https://discord.com/api/webhooks/606873513" -e CRON="0 17 * * *" -p 8078:8078 -v tnd_data:/config -d ghcr.io/foxxmd/tautuilli-notification-digest
 ```
-
-**NOTE: You should still [bind a folder into the container](#docker-3) in order to persist your data!**
 
 #### Local
 
@@ -167,10 +168,10 @@ An example config file with all options [can be found here.](/config/config.yaml
 
 #### Docker
 
-Mount a directory containing your `config.yaml` file to the `/config` directory in the container:
+[Mount a directory](https://docs.docker.com/storage/bind-mounts/) containing your `config.yaml` file to the `/config` directory in the container:
 
 ```shell
-docker run -v /host/path/folder:/config ... -d ghcr.io/foxxmd/tautuilli-notification-digest
+docker run -v /host/path/folder:/config -p 8078:8078 -d ghcr.io/foxxmd/tautuilli-notification-digest
 ```
 
 #### Local
@@ -190,8 +191,13 @@ The below run examples will send one summary digest notification a day to discor
 
 **Note:** When using a `bridge` network (docker default) make sure you map the correct server port (8078 by default) from the container to host.
 
+**Note:** **You must persist data! If** 
+
+* Using only ENVs then [create a volume](#docker-1)
+* Using a file (`config.yaml`) then [bind a directory](#docker-2)
+
 ```shell
-docker run -v /host/path/to/data:/config -e DISCORD_WEBHOOK="https://discord.com/api/webhooks/606873513" -e CRON="0 17 * * *" -p 8078:8078 -d ghcr.io/foxxmd/tautuilli-notification-digest
+docker run -v tnd_data:/config -e DISCORD_WEBHOOK="https://discord.com/api/webhooks/606873513" -e CRON="0 17 * * *" -p 8078:8078 -d ghcr.io/foxxmd/tautuilli-notification-digest
 ```
 
 ## Local
