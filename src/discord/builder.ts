@@ -172,7 +172,8 @@ export const convertEventsToEmbeds = (currEvents: (APIEmbed)[], options: Discord
 
     for (const origEvent of currEvents) {
         // deep clone
-        const event = new EmbedBuilder(origEvent); // JSON.parse(JSON.stringify(origEvent)) as APIEmbed;
+        const {timestamp, ...cleanEvent} = origEvent;
+        const event = new EmbedBuilder(cleanEvent); // JSON.parse(JSON.stringify(origEvent)) as APIEmbed;
 
         if (embeds.length === 9) {
             if (overflowList.length === overflowTruncate) {
