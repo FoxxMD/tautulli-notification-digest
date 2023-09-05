@@ -29,8 +29,8 @@ WORKDIR /app
 FROM base as build
 
 # copy NPM dependencies and install
-COPY --chown=abc:abc package*.json ./
-COPY --chown=abc:abc tsconfig.json .
+COPY --chown=abc:abc package.json yarn.lock tsconfig.json ./
+COPY --chown=abc:abc patches ./patches
 
 RUN yarn add global patch-package && yarn install
 
@@ -41,6 +41,7 @@ RUN yarn run build && rm -rf node_modules
 FROM base as app
 
 COPY --from=build --chown=abc:abc /app /app
+COPY --chown=abc:abc patches /app/patches
 
 ENV NODE_ENV="production"
 
