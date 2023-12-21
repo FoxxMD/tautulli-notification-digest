@@ -1,5 +1,12 @@
 # tautuilli-notification-digest
 
+[![Latest Release](https://img.shields.io/github/v/release/foxxmd/tautulli-notification-digest)](https://github.com/FoxxMD/tautulli-notification-digest/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Docker Pulls](https://img.shields.io/docker/pulls/foxxmd/tautulli-notification-digest)](https://hub.docker.com/r/foxxmd/tautulli-notification-digest)
+
+<img src="/docs/assets/icon.png" align="right"
+alt="multi-scrobbler logo" width="180" height="180">
+
 tautuilli-notification-digest (TND) creates "digest" (timed summary) notifications of **Media Added** events for discord using [Tautulli's](https://tautulli.com/) discord [notification agent](https://github.com/Tautulli/Tautulli/wiki/Notification-Agents-Guide#discord).
 
 <!-- TOC -->
