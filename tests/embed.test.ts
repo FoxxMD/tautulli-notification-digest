@@ -48,7 +48,7 @@ describe('Basic Message Building', function () {
 
         const [messages, eventCount] = buildMessages(defaultTestDigest(), [event], images);
         assert.isTrue(true, 'is true');
-        sendMessages(defaultTestDigest(), messages);
+        await sendMessages(defaultTestDigest(), messages);
         return;
     });
 
@@ -59,7 +59,7 @@ describe('Basic Message Building', function () {
 
         const [messages, eventCount] = buildMessages(defaultTestDigest(), [event], images);
         assert.isTrue(true, 'is true');
-        sendMessages(defaultTestDigest(), messages);
+        await sendMessages(defaultTestDigest(), messages);
         return;
     });
 });
@@ -79,11 +79,11 @@ describe('Embed Collapsing', function () {
 
         assert.exists((messages[0].embeds[0] as EmbedBuilder).data.image);
         assert.notExists((messages[0].embeds[0] as EmbedBuilder).data.thumbnail);
-        sendMessages(defaultTestDigest(), messages);
+        await sendMessages(defaultTestDigest(), messages);
         return;
     });
 
-    it('Collapses to poster', async function (done) {
+    it('Collapses to poster', async function () {
         const rand = uniqueRandomNumber();
         const events: TautulliRequestData[] = [];
         const images: TautulliRequestFileData[] = [];
@@ -106,7 +106,7 @@ describe('Embed Collapsing', function () {
         const [messages, eventCount] = buildMessages(digest, events, images);
 
         assert.exists((messages[0].embeds[0] as EmbedBuilder).data.image);
-        sendMessages(defaultTestDigest(), messages);
+        await sendMessages(defaultTestDigest(), messages);
         return;
     });
 
@@ -126,11 +126,11 @@ describe('Embed Collapsing', function () {
 
         assert.exists((messages[0].embeds[0] as EmbedBuilder).data.thumbnail);
         assert.notExists((messages[0].embeds[0] as EmbedBuilder).data.image);
-        sendMessages(defaultTestDigest(), messages);
+        await sendMessages(defaultTestDigest(), messages);
         return;
     });
 
-    it('Collapses to text', async function (done) {
+    it('Collapses to text', async function () {
         const rand = uniqueRandomNumber();
         const events: TautulliRequestData[] = [];
         const images: TautulliRequestFileData[] = [];
@@ -153,7 +153,7 @@ describe('Embed Collapsing', function () {
 
         assert.notExists((messages[0].embeds[0] as EmbedBuilder).data.thumbnail);
         assert.notExists((messages[0].embeds[0] as EmbedBuilder).data.image);
-        sendMessages(defaultTestDigest(), messages);
+        await sendMessages(defaultTestDigest(), messages);
         return;
     });
 
@@ -182,7 +182,7 @@ describe('Embed Collapsing', function () {
         assert.notExists((messages[0].embeds[0] as EmbedBuilder).data.thumbnail);
         assert.notExists((messages[0].embeds[0] as EmbedBuilder).data.image);
         assert.equal(messages[0].embeds.length, 1);
-        sendMessages(defaultTestDigest(), messages);
+        await sendMessages(defaultTestDigest(), messages);
         return;
     });
 
@@ -198,7 +198,7 @@ describe('Embed Collapsing', function () {
             }
         }
         const charCount = events.reduce((acc, curr) => {
-            return acc + (curr.content.embeds[0] as EmbedBuilder).data.title.length;
+            return acc + (curr.content.embeds[0] as APIEmbed).title.length;
         }, 0);
         const calculatedEmbedCount = Math.ceil(charCount / 900);
 
@@ -213,7 +213,7 @@ describe('Embed Collapsing', function () {
         const [messages, eventCount] = buildMessages(digest, events, images);
 
         assert.equal(messages[0].embeds.length, calculatedEmbedCount);
-        sendMessages(defaultTestDigest(), messages);
+        await sendMessages(defaultTestDigest(), messages);
         return;
     });
 
@@ -234,7 +234,7 @@ describe('Embed Collapsing', function () {
         assert.equal(messages[0].embeds.length, 10);
         assert.notExists((messages[0].embeds[9] as APIEmbed).thumbnail);
         assert.notExists((messages[0].embeds[9] as APIEmbed).image);
-        sendMessages(defaultTestDigest(), messages);
+        await sendMessages(defaultTestDigest(), messages);
         return;
     });
 
@@ -256,7 +256,7 @@ describe('Embed Collapsing', function () {
         assert.notExists((messages[0].embeds[9] as EmbedBuilder).data.thumbnail);
         assert.notExists((messages[0].embeds[9] as EmbedBuilder).data.image);
         assert.isTrue((messages[0].embeds[9] as EmbedBuilder).data.description.includes('and 21 more'));
-        sendMessages(defaultTestDigest(), messages);
+        await sendMessages(defaultTestDigest(), messages);
         return;
     });
 });
