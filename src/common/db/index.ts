@@ -1,4 +1,4 @@
-import {getLogger} from "../logging.js";
+import { childLogger, Logger } from "@foxxmd/logging";
 import path from "path";
 import {dataDir, projectDir} from "../index.js";
 import {Sequelize} from "sequelize";
@@ -9,8 +9,8 @@ import {setupMappings} from "./setup.js";
 import {Options} from "sequelize/types/sequelize.js";
 import {redactString} from "@foxxmd/redact-string";
 
-export const initDB = async (config: OperatorConfig) => {
-    const logger = getLogger(config.logging, 'DB');
+export const initDB = async (config: OperatorConfig, parentLogger: Logger) => {
+    const logger = childLogger(parentLogger, 'DB');
 
     const {
         logging: {
@@ -60,7 +60,7 @@ export const initDB = async (config: OperatorConfig) => {
 
     setupMappings(sequelize);
 
-    await runMigrations(sequelize);
+    await runMigrations(sequelize, logger);
 
     return sequelize;
 }
@@ -76,9 +76,7 @@ const logFunc = (payload: Record<string, unknown>) => {
     return parts.join('');
 }
 
-const runMigrations = async (db: Sequelize): Promise<void> => {
-
-    const logger = getLogger(undefined, 'DB');
+const runMigrations = async (db: Sequelize, logger: Logger): Promise<void> => {
 
     //const logFunc = umzugLoggerFunc(logger);
 

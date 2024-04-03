@@ -1,13 +1,13 @@
+import { childLogger, Logger } from "@foxxmd/logging";
 import {DigestData} from "../infrastructure/OperatorConfig.js";
-import {AppLogger} from "../logging.js";
 import {mergeArr, sleep} from "../../utils/index.js";
 import {WebhookClient} from "discord.js";
 import {TautulliRequest} from "../db/models/TautulliRequest.js";
 import {buildMessages} from "../../discord/builder.js";
 import {ErrorWithCause} from "pony-cause";
 
-export const processPendingDigests = async (digest: DigestData, parentLogger: AppLogger, id?: string) => {
-    const digestLogger = parentLogger.child({labels: [`Digest ${id ?? digest.slug}`]}, mergeArr);
+export const processPendingDigests = async (digest: DigestData, parentLogger: Logger, id?: string) => {
+    const digestLogger = childLogger(parentLogger, `Digest ${id ?? digest.slug}`);
 
     const {
         slug,
@@ -16,7 +16,7 @@ export const processPendingDigests = async (digest: DigestData, parentLogger: Ap
         }
     } = digest;
 
-    const logger = digestLogger.child({labels: slug}, mergeArr);
+    const logger = childLogger(digestLogger, slug);
 
     let sentEvents = 0;
     let sentMessages = 0;

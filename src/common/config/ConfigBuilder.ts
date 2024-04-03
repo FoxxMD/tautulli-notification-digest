@@ -1,5 +1,4 @@
-import winston, {Logger} from "@foxxmd/winston";
-import path from "path";
+import { Logger, loggerDebug, LogLevel } from "@foxxmd/logging";
 import {dataDir, projectDir} from "../index.js";
 import {readFile, readFileToString} from "../../utils/io.js";
 import {ErrorWithCause} from "pony-cause";
@@ -16,11 +15,9 @@ import {createAjvFactory} from "../../utils/validation.js";
 import {Schema} from "ajv";
 import * as operatorSchema from '../schema/operator.json';
 import merge from 'deepmerge';
-import {LogLevel} from "../infrastructure/Atomic.js";
 import {overwriteMerge} from "../../utils/index.js";
-import {getLogger, AppLogger} from "../logging.js";
 
-export const validateJson = <T>(config: object, schema: Schema, logger: AppLogger): T => {
+export const validateJson = <T>(config: object, schema: Schema, logger: Logger): T => {
     const ajv = createAjvFactory(logger);
     const valid = ajv.validate(schema, config);
     if (valid) {
@@ -73,7 +70,7 @@ export const validateJson = <T>(config: object, schema: Schema, logger: AppLogge
 
 export const parseConfigFromSources = async () => {
 
-    const initLogger = winston.loggers.get('init') as AppLogger;
+    const initLogger = loggerDebug;
 
     let configDoc: YamlOperatorConfigDocument
     let configFromFile: OperatorJsonConfig = {digests: []};

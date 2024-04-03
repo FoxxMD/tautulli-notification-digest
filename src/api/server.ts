@@ -1,7 +1,7 @@
 import {addAsync, Router} from '@awaitjs/express';
+import { childLogger, Logger } from "@foxxmd/logging";
 import express from 'express';
 import {OperatorConfig} from "../common/infrastructure/OperatorConfig.js";
-import {AppLogger} from "../common/logging.js";
 import {mergeArr} from "../utils/index.js";
 import {tautulliFormMiddleware} from "./tautulliFormMiddleware.js";
 import {IncomingFileData} from "../common/infrastructure/Atomic.js";
@@ -19,10 +19,10 @@ let envPort = process.env.PORT ?? 8078;
 
 app.use(router);
 
-export const initServer = async (config: OperatorConfig, parentLogger: AppLogger) => {
+export const initServer = async (config: OperatorConfig, parentLogger: Logger) => {
 
-    const apiLogger = parentLogger.child({labels: ['API']}, mergeArr);
-    const ingressLogger = apiLogger.child({labels: ['Tautulli Request']}, mergeArr);
+    const apiLogger = childLogger(parentLogger, 'API');
+    const ingressLogger = childLogger(parentLogger, 'Tautulli Request');
     try {
         const {
             port = envPort

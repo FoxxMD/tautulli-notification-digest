@@ -1,4 +1,4 @@
-import {AppLogger} from "../common/logging.js";
+import { childLogger, Logger } from "@foxxmd/logging";
 import {mergeArr} from "../utils/index.js";
 import formidable, {File, Files, VolatileFile} from "formidable";
 import concatStream from 'concat-stream';
@@ -17,8 +17,8 @@ const fileIdentifier = (name: string, file: any) => {
     return identifier;
 }
 
-export const tautulliFormMiddleware = (parentLogger: AppLogger) => {
-    const logger = parentLogger.child({labels: ['Form']}, mergeArr);
+export const tautulliFormMiddleware = (parentLogger: Logger) => {
+    const logger = childLogger(parentLogger, 'Form');
 
     return async (req: any, res: any, next: any) => {
 

@@ -1,16 +1,11 @@
-import {mergeArr, sleep} from "../../utils/index.js";
+import { childLogger, Logger } from "@foxxmd/logging";
 import {AsyncTask} from "toad-scheduler";
 import {PromisePool} from "@supercharge/promise-pool";
-import {DigestData, OperatorConfig} from "../../common/infrastructure/OperatorConfig.js";
-import {AppLogger} from "../../common/logging.js";
-import {APIEmbed, AttachmentBuilder, WebhookClient} from "discord.js";
-import {TautulliRequest} from "../../common/db/models/TautulliRequest.js";
-import {ErrorWithCause} from "pony-cause";
-import {buildMessages} from "../../discord/builder.js";
+import {DigestData} from "../../common/infrastructure/OperatorConfig.js";
 import {processPendingDigests} from "../../common/funcs/processPendingDigests.js";
 
-export const createProcessPendingDigestsTask = (id: string, digest: DigestData, parentLogger: AppLogger) => {
-    const digestLogger = parentLogger.child({labels: [`Digest ${id}`]}, mergeArr);
+export const createProcessPendingDigestsTask = (id: string, digest: DigestData, parentLogger: Logger) => {
+    const digestLogger = childLogger(parentLogger, `Digest ${id}`);
     return new AsyncTask(
         `Digest - ${id}`,
         (): Promise<any> => {

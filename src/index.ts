@@ -1,3 +1,4 @@
+import { loggerDebug } from "@foxxmd/logging";
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc.js';
 import isBetween from 'dayjs/plugin/isBetween.js';
@@ -5,7 +6,7 @@ import relativeTime from 'dayjs/plugin/relativeTime.js';
 import duration from 'dayjs/plugin/duration.js';
 
 import dotenv from 'dotenv';
-import {AppLogger, getLogger} from "./common/logging.js";
+import { appLogger } from "./common/logging.js";
 import {parseConfigFromSources} from "./common/config/ConfigBuilder.js";
 import {dataDir} from "./common/index.js";
 import {initDB} from "./common/db/index.js";
@@ -19,7 +20,7 @@ dayjs.extend(duration);
 
 dotenv.config();
 
-let logger: AppLogger = getLogger({file: false}, 'init');
+let logger = loggerDebug;
 logger.debug(`Data Dir ENV: ${process.env.DATA_DIR} -> Resolved: ${dataDir}`);
 
 (async function () {
@@ -30,9 +31,11 @@ logger.debug(`Data Dir ENV: ${process.env.DATA_DIR} -> Resolved: ${dataDir}`);
             logging = {},
         } = config;
 
-        const db = await initDB(config);
 
-        logger = getLogger(logging);
+
+        const appLog = await appLogger(logging)
+        const db = await initDB(config, appLog);
+        logger = appLog;
 
         initServer(config, logger);
         initScheduler(config, logger);

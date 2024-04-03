@@ -1,4 +1,3 @@
-import {AppLogger} from "../common/logging.js";
 import {
     DigestData,
     discordOptionsDef,

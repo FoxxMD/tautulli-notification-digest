@@ -1,5 +1,5 @@
+import { Logger } from "@foxxmd/logging";
 import dayjs, {Dayjs} from "dayjs";
-import {AppLogger} from "../common/logging.js";
 import {
     replaceResultTransformer,
     stripIndentTransformer,
@@ -86,9 +86,9 @@ export class RateLimitFunc {
     public lastExecute?: Dayjs;
     public msBetween: number;
     protected shouldWait: boolean;
-    protected logger?: AppLogger;
+    protected logger?: Logger
 
-    constructor(msBetween: number, shouldWait: boolean, logger?: AppLogger) {
+    constructor(msBetween: number, shouldWait: boolean, logger?: Logger) {
         this.msBetween = msBetween;
         this.lastExecute = dayjs().subtract(msBetween + 1, 'ms');
         this.logger = logger;

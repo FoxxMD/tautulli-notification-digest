@@ -1,13 +1,13 @@
+import { childLogger, Logger } from "@foxxmd/logging";
 import {CronJob, SimpleIntervalJob, ToadScheduler} from "toad-scheduler";
 import {createHeartbeatTask} from "./tasks/heartbeatTask.js";
 import {OperatorConfig} from "../common/infrastructure/OperatorConfig.js";
-import {AppLogger} from "../common/logging.js";
 import {createProcessPendingDigestsTask} from "./tasks/createProcessPendingDigestsTask.js";
 import {mergeArr} from "../utils/index.js";
 
-export const initScheduler = (config: OperatorConfig, parentLogger: AppLogger) => {
+export const initScheduler = (config: OperatorConfig, parentLogger: Logger) => {
     const scheduler = new ToadScheduler()
-    const logger = parentLogger.child({labels: ['Scheduler']}, mergeArr)
+    const logger = childLogger(parentLogger, 'Scheduler');
 
     scheduler.addSimpleIntervalJob(new SimpleIntervalJob({
         minutes: 30,

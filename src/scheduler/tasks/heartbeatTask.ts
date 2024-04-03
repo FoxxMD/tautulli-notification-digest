@@ -1,12 +1,11 @@
-import {mergeArr} from "../../utils/index.js";
+import { childLogger, Logger } from "@foxxmd/logging";
 import {AsyncTask} from "toad-scheduler";
 import {PromisePool} from "@supercharge/promise-pool";
 import {DigestData, OperatorConfig} from "../../common/infrastructure/OperatorConfig.js";
-import {AppLogger} from "../../common/logging.js";
 import {TautulliRequest} from "../../common/db/models/TautulliRequest.js";
 
-export const createHeartbeatTask = (config: OperatorConfig, parentLogger: AppLogger) => {
-    const logger = parentLogger.child({labels: ['Heartbeat']}, mergeArr);
+export const createHeartbeatTask = (config: OperatorConfig, parentLogger: Logger) => {
+    const logger = childLogger(parentLogger, 'Heartbeat');
     return new AsyncTask(
         'Heartbeat',
         (): Promise<any> => {
