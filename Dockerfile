@@ -32,7 +32,7 @@ FROM base as build
 COPY --chown=abc:abc package.json yarn.lock tsconfig.json ./
 COPY --chown=abc:abc patches ./patches
 
-RUN yarn add global patch-package && yarn install
+RUN yarn install
 
 COPY --chown=abc:abc . /app
 
@@ -43,10 +43,12 @@ FROM base as app
 COPY --from=build --chown=abc:abc /app /app
 COPY --chown=abc:abc patches /app/patches
 
-ENV NODE_ENV="production"
+ENV NODE_ENV=production
+ENV COLORED_STD=true
 
-RUN yarn add global patch-package && yarn install --omit=dev \
+RUN yarn install --omit=dev \
     && npm cache clean --force \
     && chown abc:abc node_modules \
-    && rm -rf node_modules/ts-node \
-    && rm -rf node_modules/typescript
+    && rm -rf node_modules/tsx \
+    && rm -rf node_modules/typescript \
+    && rm -rf node_modules/patch-package

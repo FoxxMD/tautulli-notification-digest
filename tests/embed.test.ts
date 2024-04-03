@@ -2,6 +2,11 @@ import {describe, it} from 'mocha';
 import {assert} from 'chai';
 import {DigestData, OperatorConfig} from "../src/common/infrastructure/OperatorConfig";
 import dotenv from 'dotenv';
+import {
+    EventAwareBaseMessageOptions,
+    TautulliRequestData,
+    TautulliRequestFileData
+} from "../src/common/infrastructure/Tautulli.js";
 import {defaultTestDigest, getDummyEvent, getDummyRequest} from "./testFactory";
 import {buildMessages} from "../src/discord/builder";
 import {parseBool, sleep, uniqueRandomNumber} from "../src/utils";
@@ -9,11 +14,6 @@ import {projectDir} from "../src/common/index.js";
 import path from "path";
 import {APIEmbed, BaseMessageOptions, EmbedBuilder, WebhookClient} from "discord.js";
 import {ErrorWithCause} from "pony-cause";
-import {
-    EventAwareBaseMessageOptions,
-    TautulliRequestData,
-    TautulliRequestFileData
-} from "../src/common/infrastructure/Atomic.js";
 
 const sendMessages = async (digest: DigestData, messages: EventAwareBaseMessageOptions[]) => {
     if (parseBool(process.env.SEND_TEST_EVENTS)) {

@@ -109,6 +109,17 @@
             ],
             "type": "object"
         },
+        "DiscordLogLevel": {
+            "enum": [
+                "debug",
+                "error",
+                "info",
+                "safety",
+                "verbose",
+                "warn"
+            ],
+            "type": "string"
+        },
         "DiscordOptions": {
             "properties": {
                 "eventsPerMessage": {
@@ -117,9 +128,7 @@
                 "list": {
                     "anyOf": [
                         {
-                            "enum": [
-                                false
-                            ],
+                            "const": false,
                             "type": "boolean"
                         },
                         {
@@ -136,9 +145,7 @@
                             "$ref": "#/definitions/EventFormatOptions"
                         },
                         {
-                            "enum": [
-                                false
-                            ],
+                            "const": false,
                             "type": "boolean"
                         },
                         {
@@ -152,9 +159,7 @@
                             "$ref": "#/definitions/EventFormatOptions"
                         },
                         {
-                            "enum": [
-                                false
-                            ],
+                            "const": false,
                             "type": "boolean"
                         },
                         {
@@ -168,9 +173,7 @@
                             "$ref": "#/definitions/EventFormatOptions"
                         },
                         {
-                            "enum": [
-                                false
-                            ],
+                            "const": false,
                             "type": "boolean"
                         },
                         {
@@ -201,12 +204,76 @@
             ],
             "type": "object"
         },
+        "FileLogOptions": {
+            "properties": {
+                "frequency": {
+                    "anyOf": [
+                        {
+                            "enum": [
+                                "daily",
+                                "hourly"
+                            ],
+                            "type": "string"
+                        },
+                        {
+                            "type": "number"
+                        }
+                    ],
+                    "default": "'daily'",
+                    "description": "The amount of time a given rolling log file is used. Can be combined with size.\n\nUse `daily` or `hourly` to rotate file every day (or every hour). Existing file within the current day (or hour) will be re-used.\n\nNumerical values will be considered as a number of milliseconds. Using a numerical value will always create a new file upon startup."
+                },
+                "level": {
+                    "description": "Specify the minimum log level to output to rotating files. If `false` no log files will be created.",
+                    "enum": [
+                        "debug",
+                        "error",
+                        false,
+                        "fatal",
+                        "info",
+                        "log",
+                        "silent",
+                        "verbose",
+                        "warn"
+                    ]
+                },
+                "path": {
+                    "default": "'./logs/app.log'",
+                    "description": "The path and filename to use for log files.\n\nIf using rolling files the filename will be appended with `.N` (a number) BEFORE the extension based on rolling status.\n\nMay also be specified using env LOG_PATH or a function that returns a string.\n\nIf path is relative the absolute path will be derived from `logBaseDir` (in `LoggerAppExtras`) which defaults to CWD",
+                    "type": [
+                        "string",
+                        "object"
+                    ]
+                },
+                "size": {
+                    "default": "'10MB'",
+                    "description": "The maximum size of a given rolling log file.\n\nCan be combined with frequency. Use k, m and g to express values in KB, MB or GB.\n\nNumerical values will be considered as MB.",
+                    "type": [
+                        "string",
+                        "number"
+                    ]
+                },
+                "timestamp": {
+                    "default": "'auto'",
+                    "description": "For rolling log files\n\nWhen\n* value passed to rolling destination is a string (`path` from LogOptions is a string) and\n* `frequency` is defined\n\nThis determines the format of the datetime inserted into the log file name:\n\n* `unix` - unix epoch timestamp in milliseconds\n* `iso`  - Full [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) datetime IE '2024-03-07T20:11:34Z'\n* `auto`\n  * When frequency is `daily` only inserts date IE YYYY-MM-DD\n  * Otherwise inserts full ISO8601 datetime",
+                    "enum": [
+                        "auto",
+                        "iso",
+                        "unix"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
         "LogLevel": {
+            "description": "Names of log levels that can be invoked on the logger\n\nFrom lowest to highest:\n\n* `debug`\n* `verbose`\n* `log`\n* `info`\n* `warn`\n* `error`\n* `fatal`\n* `silent` (will never output anything)\n\nWhen used in `LogOptions` specifies the **minimum** level the output should log at.",
             "enum": [
                 "debug",
                 "error",
+                "fatal",
                 "info",
-                "safety",
+                "log",
+                "silent",
                 "verbose",
                 "warn"
             ],
@@ -222,28 +289,33 @@
                     "type": "boolean"
                 },
                 "discord": {
-                    "$ref": "#/definitions/LogLevel"
+                    "$ref": "#/definitions/DiscordLogLevel"
                 },
                 "file": {
-                    "description": "Specify the minimum log level to output to rotating files. If `false` no log files will be created.",
-                    "enum": [
-                        "debug",
-                        "error",
-                        false,
-                        "info",
-                        "safety",
-                        "verbose",
-                        "warn"
-                    ]
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/FileLogOptions"
+                        },
+                        {
+                            "enum": [
+                                "debug",
+                                "error",
+                                false,
+                                "fatal",
+                                "info",
+                                "log",
+                                "silent",
+                                "verbose",
+                                "warn"
+                            ]
+                        }
+                    ],
+                    "description": "Specify the minimum log level to output to rotating files or file output options. If `false` no log files will be created."
                 },
                 "level": {
                     "$ref": "#/definitions/LogLevel",
                     "default": "'info'",
                     "description": "Specify the minimum log level for all log outputs without their own level specified.\n\nDefaults to env `LOG_LEVEL` or `info` if not specified."
-                },
-                "stream": {
-                    "$ref": "#/definitions/LogLevel",
-                    "description": "Specify the minimum log level streamed to the UI"
                 }
             },
             "type": "object"

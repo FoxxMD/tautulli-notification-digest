@@ -11,9 +11,9 @@ import {
     HasManyCreateAssociationMixin,
     Model, Association,
 } from "sequelize";
+import { TautulliRequestData } from "../../infrastructure/Tautulli.js";
 import {TautulliRequestFile} from "./TautulliRequestFile.js";
 import {BaseMessageOptions} from "discord.js";
-import {TautulliRequestData} from "../../infrastructure/Atomic.js";
 
 export class TautulliRequest extends Model<InferAttributes<TautulliRequest>, InferCreationAttributes<TautulliRequest>> implements TautulliRequestData {
 

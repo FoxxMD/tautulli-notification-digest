@@ -7,8 +7,8 @@ import {
     CreationOptional,
     Model, ForeignKey,
 } from "sequelize";
+import { TautulliRequestFileData } from "../../infrastructure/Tautulli.js";
 import {TautulliRequest} from "./TautulliRequest.js";
-import {TautulliRequestFileData} from "../../infrastructure/Atomic.js";
 
 export class TautulliRequestFile extends Model<InferAttributes<TautulliRequestFile>, InferCreationAttributes<TautulliRequestFile>> implements TautulliRequestFileData {
 

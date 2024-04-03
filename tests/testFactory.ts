@@ -3,10 +3,11 @@ import dayjs, {Dayjs} from "dayjs";
 import {LoremIpsum} from "lorem-ipsum";
 import {promises} from "fs";
 import path from 'path';
+import { TautulliRequestData, TautulliRequestFileData } from "../src/common/infrastructure/Tautulli.js";
 import {pickRandom, readFile} from "../src/utils/io.js";
 import {APIEmbedImage, BaseMessageOptions} from "discord.js";
 import crypto from 'crypto';
-import {FileData, TautulliRequestData, TautulliRequestFileData} from "../src/common/infrastructure/Atomic.js";
+import {FileData} from "../src/common/infrastructure/Atomic.js";
 import {randomNumber} from "../src/utils/index.js";
 import {projectDir} from "../src/common/index.js";
 

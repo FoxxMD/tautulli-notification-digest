@@ -5,11 +5,13 @@ import {
     DiscordOptions, EventFormatOptions
 } from "../common/infrastructure/OperatorConfig.js";
 import {
+    FileData
+} from "../common/infrastructure/Atomic.js";
+import {
     EventAwareBaseMessageOptions,
-    FileData,
     TautulliRequestData,
     TautulliRequestFileData
-} from "../common/infrastructure/Atomic.js";
+} from "../common/infrastructure/Tautulli.js";
 import {markdownTag, mergeArr, truncateStringToLength} from "../utils/index.js";
 import {APIEmbed, AttachmentBuilder, BaseMessageOptions, EmbedBuilder} from "discord.js";
 

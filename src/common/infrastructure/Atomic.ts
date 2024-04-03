@@ -1,7 +1,3 @@
-import {BaseMessageOptions} from "discord.js";
-
-export type DiscordLogLevel = "error" | "warn" | "safety" | "info" | "verbose" | "debug";
-
 export type ConfigFormat = 'yaml';
 
 export interface NamedGroup {
@@ -54,22 +50,8 @@ export interface IncomingFileData {
     size: number
 }
 
-export interface TautulliRequestData {
-    id: number,
-    content: BaseMessageOptions
-}
-
-export interface TautulliRequestFileData extends FileData {
-    tautulliRequestId: number
-    content: Buffer
-    filename: string
-}
-
 export interface FileData {
     content: Buffer
     filename: string
 }
 
-export interface EventAwareBaseMessageOptions extends BaseMessageOptions {
-    includedEvents: number
-}

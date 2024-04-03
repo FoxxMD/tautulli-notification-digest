@@ -1,5 +1,6 @@
 import { LogOptions } from "@foxxmd/logging";
-import { DiscordLogLevel } from "./Atomic.js";
+
+export type DiscordLogLevel = "error" | "warn" | "safety" | "info" | "verbose" | "debug";
 
 export interface LoggingOptions extends LogOptions {
     db?: boolean
