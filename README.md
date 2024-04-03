@@ -344,4 +344,13 @@ Using the **slug** defined for your digest (ENV defaults to `my-digest`) make a 
 http://SERVER_IP:8078/api/SLUG
 ```
 
-and TND will immediately process any pending notifications
+and TND will immediately process any pending notifications.
+
+TIP: Create a bookmarklet for your browser to run this easily:
+
+* Using https://www.yourjs.com/bookmarklet in the Bookmarklet Javascript box:
+  * `fetch('http://MY_IP:8078/api/my-digest', {method: 'POST'}).then();`
+* Convert to Data URL
+  * Drag and drop converted data url into your bookmarks
+
+Then the bookmark can be clicked to trigger pending notifications to run.
