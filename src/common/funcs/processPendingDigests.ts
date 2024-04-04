@@ -6,8 +6,7 @@ import {TautulliRequest} from "../db/models/TautulliRequest.js";
 import {buildMessages} from "../../discord/builder.js";
 import {ErrorWithCause} from "pony-cause";
 
-export const processPendingDigests = async (digest: DigestData, parentLogger: Logger, id?: string) => {
-    const digestLogger = childLogger(parentLogger, `Digest ${id ?? digest.slug}`);
+export const processPendingDigests = async (digest: DigestData, parentLogger: Logger) => {
 
     const {
         slug,
@@ -16,7 +15,7 @@ export const processPendingDigests = async (digest: DigestData, parentLogger: Lo
         }
     } = digest;
 
-    const logger = childLogger(digestLogger, slug);
+    const logger = childLogger(parentLogger, slug);
 
     let sentEvents = 0;
     let sentMessages = 0;
