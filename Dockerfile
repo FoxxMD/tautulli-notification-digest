@@ -51,4 +51,7 @@ RUN yarn install --omit=dev \
     && chown abc:abc node_modules \
     && rm -rf node_modules/tsx \
     && rm -rf node_modules/typescript \
-    && rm -rf node_modules/patch-package
+    && rm -rf node_modules/patch-package \
+    && rm -rf node_modules/@types \
+    && rm -rf node_modules/@esbuild \
+    && rm -rf /usr/local/share/.cache \
