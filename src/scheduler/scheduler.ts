@@ -17,11 +17,15 @@ export const initScheduler = (config: OperatorConfig, parentLogger: Logger) => {
     for (const digest of config.digests) {
         const crons = Array.isArray(digest.cron) ? digest.cron : [digest.cron];
         for(const cron of crons) {
-            scheduler.addCronJob(new CronJob({
-                    cronExpression: cron,
-                },
-                createProcessPendingDigestsTask(`${digest.name !== undefined ? `${digest.name} ` : ''}${cron}`, digest, parentLogger)));
-            logger.info(`Added Digest ${digest.slug} to run ${digest.cron}`);
+            try {
+                scheduler.addCronJob(new CronJob({
+                        cronExpression: cron,
+                    },
+                    createProcessPendingDigestsTask(`${digest.name !== undefined ? `${digest.name} ` : ''}${cron}`, digest, parentLogger)));
+                logger.info(`Digest ${digest.slug} will run at ${cron}`);
+            } catch (e) {
+                logger.error(new Error(`Failed to create digest for cron ${cron}`, {cause: e}))
+            }
         }
     }
 
