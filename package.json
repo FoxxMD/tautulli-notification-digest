@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@awaitjs/express": "^0.6.3",
-    "@foxxmd/logging": "^0.2.0",
+    "@foxxmd/logging": "^0.2.2",
     "@foxxmd/redact-string": "^0.1.2",
     "@supercharge/promise-pool": "^3.0.0",
     "ajv": "^7.2.4",
